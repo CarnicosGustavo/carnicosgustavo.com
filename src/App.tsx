@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { motion } from 'framer-motion'
 
 import { Footer } from './components/layout/Footer'
 import { Header } from './components/layout/Header'
@@ -29,56 +30,96 @@ function App() {
             className="absolute inset-0 h-full w-full object-cover opacity-50"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/40 to-black/80" />
-          <div className="relative mx-auto flex max-w-6xl flex-col gap-8 px-4 py-16 md:py-24">
+          <motion.div
+            initial="hidden"
+            animate="show"
+            variants={{
+              hidden: {},
+              show: { transition: { staggerChildren: 0.08 } },
+            }}
+            className="relative mx-auto flex max-w-6xl flex-col gap-8 px-4 py-16 md:py-24"
+          >
             <div className="max-w-3xl">
-              <div className="inline-flex items-center gap-2 rounded bg-white/10 px-3 py-2 text-xs font-extrabold tracking-wide text-white">
+              <motion.div
+                variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }}
+                transition={{ duration: 0.35, ease: 'easeInOut' }}
+                className="inline-flex items-center gap-2 rounded bg-white/10 px-3 py-2 text-xs font-extrabold tracking-wide text-white"
+              >
                 {BUSINESS.tagline}
-              </div>
-              <h1 className="mt-6 font-display text-4xl font-extrabold tracking-tight text-white md:text-6xl">
+              </motion.div>
+              <motion.h1
+                variants={{ hidden: { opacity: 0, y: 14 }, show: { opacity: 1, y: 0 } }}
+                transition={{ duration: 0.45, ease: 'easeInOut' }}
+                className="mt-6 font-display text-4xl font-extrabold tracking-tight text-white md:text-6xl"
+              >
                 Abastecemos el éxito de tu negocio con la mejor selección de cerdo.
-              </h1>
-              <p className="mt-5 max-w-2xl text-base leading-relaxed text-white/80">
+              </motion.h1>
+              <motion.p
+                variants={{ hidden: { opacity: 0, y: 14 }, show: { opacity: 1, y: 0 } }}
+                transition={{ duration: 0.45, ease: 'easeInOut' }}
+                className="mt-5 max-w-2xl text-base leading-relaxed text-white/80"
+              >
                 En el Centro de Distribución Cárnicos Gustavo, somos más que proveedores: somos el aliado
                 estratégico de restaurantes y carnicerías que no comprometen la calidad en productos de
                 cerdo. Llevamos frescura y rendimiento directamente a tu puerta.
-              </p>
+              </motion.p>
 
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <motion.div
+                variants={{ hidden: { opacity: 0, y: 14 }, show: { opacity: 1, y: 0 } }}
+                transition={{ duration: 0.35, ease: 'easeInOut' }}
+                className="mt-8 flex flex-col gap-3 sm:flex-row"
+              >
                 <a
                   href="#catalogo"
                   className="inline-flex items-center justify-center rounded bg-cg-red px-5 py-3 text-sm font-extrabold text-white hover:brightness-110"
                 >
                   Ver catálogo de cerdo
                 </a>
-                <button
+                <motion.button
                   type="button"
                   onClick={() => setOrderOpen(true)}
+                  animate={{ scale: [1, 1.02, 1] }}
+                  transition={{ duration: 2.2, ease: 'easeInOut', repeat: Infinity }}
                   className="inline-flex items-center justify-center rounded border border-white/30 bg-white/10 px-5 py-3 text-sm font-extrabold text-white hover:bg-white/15"
                 >
                   Solicitar cotización mayorista
-                </button>
-              </div>
+                </motion.button>
+              </motion.div>
             </div>
 
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <motion.div
+              variants={{ hidden: { opacity: 0, y: 14 }, show: { opacity: 1, y: 0 } }}
+              transition={{ duration: 0.45, ease: 'easeInOut' }}
+              className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4"
+            >
               {[
                 { title: 'Calidad garantizada', text: 'Selección rigurosa de canales de cerdo para asegurar sabor y textura constantes.' },
                 { title: 'Cadena de frío certificada', text: 'Procesos logísticos estrictos que preservan la integridad de cada producto.' },
                 { title: 'Precios de distribución', text: 'Maximizamos tu margen de utilidad con precios competitivos por volumen.' },
                 { title: 'Entrega puntual', text: 'Entendemos el ritmo de tu cocina y tu mostrador; llegamos cuando nos necesitas.' },
               ].map((b) => (
-                <div key={b.title} className="rounded border border-white/10 bg-white/5 p-4">
+                <motion.div
+                  key={b.title}
+                  whileHover={{ scale: 1.02 }}
+                  transition={{ duration: 0.2, ease: 'easeInOut' }}
+                  className="rounded border border-white/10 bg-white/5 p-4"
+                >
                   <div className="text-sm font-extrabold text-white">{b.title}</div>
                   <div className="mt-2 text-sm text-white/75">{b.text}</div>
-                </div>
+                </motion.div>
               ))}
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </section>
 
         <section id="cedis" className="py-16">
           <div className="mx-auto grid max-w-6xl grid-cols-1 gap-10 px-4 md:grid-cols-2 md:items-center">
-            <div>
+            <motion.div
+              initial={{ opacity: 0, y: 14 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.25 }}
+              transition={{ duration: 0.35, ease: 'easeInOut' }}
+            >
               <h2 className="font-display text-3xl font-extrabold tracking-tight text-cg-black">
                 Infraestructura y pasión por la calidad en productos de cerdo.
               </h2>
@@ -100,16 +141,22 @@ function App() {
                   </div>
                 ))}
               </div>
-            </div>
+            </motion.div>
 
-            <div className="overflow-hidden rounded bg-cg-gray shadow-soft ring-1 ring-black/5">
+            <motion.div
+              initial={{ opacity: 0, y: 14 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.25 }}
+              transition={{ duration: 0.35, ease: 'easeInOut' }}
+              className="overflow-hidden rounded bg-cg-gray shadow-soft ring-1 ring-black/5"
+            >
               <img
                 src="/images/canal_cerdo.png"
                 alt="Canal de cerdo"
                 className="h-72 w-full object-cover md:h-96"
                 loading="lazy"
               />
-            </div>
+            </motion.div>
           </div>
         </section>
 
@@ -123,7 +170,13 @@ function App() {
 
         <section id="restaurantes" className="py-16">
           <div className="mx-auto grid max-w-6xl grid-cols-1 gap-10 px-4 md:grid-cols-2 md:items-center">
-            <div className="order-2 md:order-1">
+            <motion.div
+              initial={{ opacity: 0, y: 14 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.25 }}
+              transition={{ duration: 0.35, ease: 'easeInOut' }}
+              className="order-2 md:order-1"
+            >
               <h2 className="font-display text-3xl font-extrabold tracking-tight text-cg-black">
                 Soluciones a la medida para el sector gastronómico: especialistas en cerdo.
               </h2>
@@ -146,29 +199,46 @@ function App() {
                   ¡Haz tu pedido de cerdo mayorista ahora!
                 </button>
               </div>
-            </div>
-            <div className="order-1 overflow-hidden rounded bg-cg-gray shadow-soft ring-1 ring-black/5 md:order-2">
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 14 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.25 }}
+              transition={{ duration: 0.35, ease: 'easeInOut' }}
+              className="order-1 overflow-hidden rounded bg-cg-gray shadow-soft ring-1 ring-black/5 md:order-2"
+            >
               <img
                 src="/images/costillar.png"
                 alt="Costillar de cerdo"
                 className="h-72 w-full object-cover md:h-96"
                 loading="lazy"
               />
-            </div>
+            </motion.div>
           </div>
         </section>
 
         <section id="carnicerias" className="bg-cg-gray py-16">
           <div className="mx-auto grid max-w-6xl grid-cols-1 gap-10 px-4 md:grid-cols-2 md:items-center">
-            <div className="overflow-hidden rounded bg-white shadow-soft ring-1 ring-black/5">
+            <motion.div
+              initial={{ opacity: 0, y: 14 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.25 }}
+              transition={{ duration: 0.35, ease: 'easeInOut' }}
+              className="overflow-hidden rounded bg-white shadow-soft ring-1 ring-black/5"
+            >
               <img
                 src="/images/espalda_cerdo.png"
                 alt="Espaldilla de cerdo"
                 className="h-72 w-full object-cover md:h-96"
                 loading="lazy"
               />
-            </div>
-            <div>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 14 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.25 }}
+              transition={{ duration: 0.35, ease: 'easeInOut' }}
+            >
               <h2 className="font-display text-3xl font-extrabold tracking-tight text-cg-black">
                 Fortalece tu mostrador con la mejor carne de cerdo de Cárnicos Gustavo.
               </h2>
@@ -191,13 +261,18 @@ function App() {
                   Hablar con un asesor de ventas
                 </button>
               </div>
-            </div>
+            </motion.div>
           </div>
         </section>
 
         <section id="contacto" className="py-16">
           <div className="mx-auto grid max-w-6xl grid-cols-1 gap-10 px-4 md:grid-cols-2 md:items-start">
-            <div>
+            <motion.div
+              initial={{ opacity: 0, y: 14 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.25 }}
+              transition={{ duration: 0.35, ease: 'easeInOut' }}
+            >
               <h2 className="font-display text-3xl font-extrabold tracking-tight text-cg-black">
                 Pedidos y contacto
               </h2>
@@ -230,9 +305,15 @@ function App() {
                   Agrega aquí teléfono, horario y correos cuando los tengas listos.
                 </div>
               </div>
-            </div>
+            </motion.div>
 
-            <div className="overflow-hidden rounded bg-cg-gray shadow-soft ring-1 ring-black/5">
+            <motion.div
+              initial={{ opacity: 0, y: 14 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.25 }}
+              transition={{ duration: 0.35, ease: 'easeInOut' }}
+              className="overflow-hidden rounded bg-cg-gray shadow-soft ring-1 ring-black/5"
+            >
               <iframe
                 title="Ubicación"
                 src={mapEmbedUrl}
@@ -240,20 +321,22 @@ function App() {
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
               />
-            </div>
+            </motion.div>
           </div>
         </section>
       </main>
 
       <Footer />
 
-      <button
+      <motion.button
         type="button"
         onClick={() => setOrderOpen(true)}
+        animate={{ scale: [1, 1.03, 1] }}
+        transition={{ duration: 2.6, ease: 'easeInOut', repeat: Infinity }}
         className="fixed bottom-5 right-5 z-40 inline-flex items-center gap-2 rounded-full bg-cg-red px-5 py-3 text-sm font-extrabold text-white shadow-soft hover:brightness-110"
       >
         Pedido <span className="rounded-full bg-white/15 px-2 py-0.5 text-xs">{order.totalItems}</span>
-      </button>
+      </motion.button>
 
       <OrderPanel
         open={orderOpen}

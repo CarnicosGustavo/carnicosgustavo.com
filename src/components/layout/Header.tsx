@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { BUSINESS } from '../../config'
 
@@ -9,6 +9,16 @@ type NavLink = {
 
 export function Header() {
   const [open, setOpen] = useState(false)
+  const [compact, setCompact] = useState(false)
+
+  useEffect(() => {
+    function onScroll() {
+      setCompact(window.scrollY > 12)
+    }
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
 
   const links: NavLink[] = useMemo(
     () => [
@@ -24,7 +34,12 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-black/10 bg-white/90 backdrop-blur">
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
+      <div
+        className={[
+          'mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 transition-all duration-200',
+          compact ? 'py-2' : 'py-3',
+        ].join(' ')}
+      >
         <a
           href="#inicio"
           className="flex items-center gap-2 font-display text-base font-extrabold tracking-tight text-cg-black"

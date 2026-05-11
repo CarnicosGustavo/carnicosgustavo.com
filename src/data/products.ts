@@ -112,6 +112,7 @@ export const PRODUCTS: Product[] = [
     id: 'cuero',
     name: 'CUERO',
     description: 'Cuero de cerdo.',
+    imageUrl: '/images/recorte_cuero_cerdo.png',
   },
   {
     id: 'costillar',
@@ -123,6 +124,7 @@ export const PRODUCTS: Product[] = [
     id: 'cuero-recorte',
     name: 'CUERO RECORTE',
     description: 'Recortes de cuero de cerdo.',
+    imageUrl: '/images/recorte_cuero_cerdo.png',
   },
   {
     id: 'cuero-cuadrado',
@@ -226,6 +228,7 @@ export const PRODUCTS: Product[] = [
     id: 'manos',
     name: 'MANOS',
     description: 'Manos de cerdo.',
+    imageUrl: '/images/manos_patas_cerdo.png',
   },
   {
     id: 'manteca',
@@ -262,21 +265,25 @@ export const PRODUCTS: Product[] = [
     id: 'papada',
     name: 'PAPADA',
     description: 'Papada de cerdo.',
+    imageUrl: '/images/papada_cerdo.png',
   },
   {
     id: 'patas',
     name: 'PATAS',
     description: 'Patas de cerdo.',
+    imageUrl: '/images/manos_patas_cerdo.png',
   },
   {
     id: 'pecho',
     name: 'PECHO',
     description: 'Pecho de cerdo.',
+    imageUrl: '/images/pecho_cerdo.png',
   },
   {
     id: 'pecho-c-cuero',
     name: 'PECHO C/CUERO',
     description: 'Pecho de cerdo con cuero.',
+    imageUrl: '/images/pecho_cerdo.png',
   },
   {
     id: 'pierna',
@@ -297,21 +304,25 @@ export const PRODUCTS: Product[] = [
     id: 'pulpa',
     name: 'PULPA',
     description: 'Pulpa de cerdo.',
+    imageUrl: '/images/pulpa_cerdo.png',
   },
   {
     id: 'pulpa-cg',
     name: 'PULPA C/G',
     description: 'Pulpa de cerdo con grasa.',
+    imageUrl: '/images/pulpa_cerdo.png',
   },
   {
     id: 'pulpa-espaldilla',
     name: 'PULPA DE ESPALDILLA',
     description: 'Pulpa de espaldilla de cerdo.',
+    imageUrl: '/images/pulpa_cerdo.png',
   },
   {
     id: 'pulpa-jamon',
     name: 'PULPA DE JAMON',
     description: 'Pulpa de jamón de cerdo.',
+    imageUrl: '/images/pulpa_cerdo.png',
   },
   {
     id: 'rabos-carnudos',
@@ -365,4 +376,3 @@ export const PRODUCTS: Product[] = [
     description: 'Trompas de cerdo.',
   },
 ]
-
