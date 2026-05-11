@@ -52,10 +52,10 @@ function App() {
               <motion.div
                 variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }}
                 transition={{ duration: 0.35, ease: 'easeInOut' }}
-                className="inline-flex rounded bg-white/95 p-3 shadow-soft ring-1 ring-black/10"
+                className="inline-flex drop-shadow-[0_12px_28px_rgba(0,0,0,0.45)]"
               >
                 <img
-                  src="/images/logotipo_gustavo_dos_lineas.png"
+                  src="/images/logo3.png"
                   alt="Cárnicos Gustavo"
                   className="h-16 w-auto sm:h-20"
                   loading="eager"
