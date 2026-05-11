@@ -48,19 +48,21 @@ function App() {
             }}
             className="relative mx-auto flex max-w-6xl flex-col gap-8 px-4 py-16 md:py-24"
           >
-            <div className="max-w-3xl">
+            <div className="grid grid-cols-1 gap-8 md:grid-cols-12 md:items-start">
               <motion.div
                 variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }}
                 transition={{ duration: 0.35, ease: 'easeInOut' }}
-                className="inline-flex drop-shadow-[0_12px_28px_rgba(0,0,0,0.45)]"
+                className="order-1 flex justify-center md:order-2 md:col-span-5 md:justify-end"
               >
                 <img
                   src="/images/logo3.png"
                   alt="Cárnicos Gustavo"
-                  className="h-16 w-auto sm:h-20"
+                  className="h-28 w-auto drop-shadow-[0_18px_38px_rgba(0,0,0,0.55)] sm:h-32 md:h-44 lg:h-52"
                   loading="eager"
                 />
               </motion.div>
+
+              <div className="order-2 md:order-1 md:col-span-7">
               <motion.div
                 variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }}
                 transition={{ duration: 0.35, ease: 'easeInOut' }}
@@ -106,6 +108,7 @@ function App() {
                   Solicitar cotización mayorista
                 </motion.button>
               </motion.div>
+              </div>
             </div>
 
             <motion.div
