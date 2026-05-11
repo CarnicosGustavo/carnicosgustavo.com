@@ -47,7 +47,7 @@ export function Header() {
         >
           <span className="inline-flex h-9 w-9 items-center justify-center overflow-hidden rounded-full bg-white ring-1 ring-black/10">
             <img
-              src="/images/logotipo_gustavo_circular.png"
+              src="/images/favicon_cerdo.png"
               alt="Cárnicos Gustavo"
               className="h-full w-full object-cover"
               loading="eager"
