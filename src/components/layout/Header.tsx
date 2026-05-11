@@ -45,8 +45,13 @@ export function Header() {
           className="flex items-center gap-2 font-display text-base font-extrabold tracking-tight text-cg-black"
           onClick={() => setOpen(false)}
         >
-          <span className="inline-flex h-8 w-8 items-center justify-center rounded bg-cg-red font-display text-sm font-extrabold text-white">
-            CG
+          <span className="inline-flex h-9 w-9 items-center justify-center overflow-hidden rounded-full bg-white ring-1 ring-black/10">
+            <img
+              src="/images/logotipo_gustavo_circular.png"
+              alt="Cárnicos Gustavo"
+              className="h-full w-full object-cover"
+              loading="eager"
+            />
           </span>
           <span className="hidden sm:inline">{BUSINESS.name}</span>
         </a>

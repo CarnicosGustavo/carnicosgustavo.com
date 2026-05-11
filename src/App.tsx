@@ -52,7 +52,19 @@ function App() {
               <motion.div
                 variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }}
                 transition={{ duration: 0.35, ease: 'easeInOut' }}
-                className="inline-flex items-center gap-2 rounded bg-white/10 px-3 py-2 text-xs font-extrabold tracking-wide text-white"
+                className="inline-flex rounded bg-white/95 p-3 shadow-soft ring-1 ring-black/10"
+              >
+                <img
+                  src="/images/logotipo_gustavo_dos_lineas.png"
+                  alt="Cárnicos Gustavo"
+                  className="h-16 w-auto sm:h-20"
+                  loading="eager"
+                />
+              </motion.div>
+              <motion.div
+                variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }}
+                transition={{ duration: 0.35, ease: 'easeInOut' }}
+                className="mt-4 inline-flex items-center gap-2 rounded bg-white/10 px-3 py-2 text-xs font-extrabold tracking-wide text-white"
               >
                 {BUSINESS.tagline}
               </motion.div>
