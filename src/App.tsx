@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 
 import { Footer } from './components/layout/Footer'
 import { Header } from './components/layout/Header'
-import { BUSINESS, LINKS } from './config'
+import { BUSINESS, CONTACT, LINKS } from './config'
 import { PRODUCTS } from './data/products'
 import { CatalogSection } from './features/catalog/CatalogSection'
 import { OrderPanel } from './features/order/OrderPanel'
@@ -12,6 +12,15 @@ import { useOrder } from './features/order/useOrder'
 function App() {
   const order = useOrder()
   const [orderOpen, setOrderOpen] = useState(false)
+
+  const whatsappDigits = useMemo(
+    () => CONTACT.whatsappPhoneE164.replace(/[^\d]/g, ''),
+    [],
+  )
+  const whatsappUrl = useMemo(
+    () => (whatsappDigits.length >= 11 ? `https://wa.me/${whatsappDigits}` : ''),
+    [whatsappDigits],
+  )
 
   const mapEmbedUrl = useMemo(() => {
     const q = encodeURIComponent(BUSINESS.locationLabel)
@@ -302,7 +311,18 @@ function App() {
               <div className="mt-10 rounded bg-cg-gray p-4 text-sm text-black/70">
                 <div className="text-sm font-extrabold text-cg-black">Horario y datos</div>
                 <div className="mt-2 text-xs text-black/60">
-                  Agrega aquí teléfono, horario y correos cuando los tengas listos.
+                  {whatsappUrl ? (
+                    <a
+                      href={whatsappUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="font-semibold text-cg-black underline decoration-black/20 underline-offset-4 hover:text-cg-red"
+                    >
+                      WhatsApp de ventas: +{whatsappDigits}
+                    </a>
+                  ) : (
+                    <span>Configura WhatsApp de ventas (VITE_WHATSAPP_PHONE).</span>
+                  )}
                 </div>
               </div>
             </motion.div>

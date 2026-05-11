@@ -5,7 +5,8 @@ import type { OrderItem } from './useOrder'
 import { buildWhatsAppMessage, buildWhatsAppUrl } from './whatsapp'
 
 function canSendWhatsApp(phoneE164: string) {
-  return Boolean(phoneE164) && !phoneE164.includes('X')
+  const digits = phoneE164.replace(/[^\d]/g, '')
+  return digits.length >= 11
 }
 
 export function OrderPanel(props: {
@@ -183,8 +184,8 @@ export function OrderPanel(props: {
 
               {!canSendWhatsApp(CONTACT.whatsappPhoneE164) && (
                 <div className="rounded border border-cg-red/20 bg-cg-red/5 p-3 text-xs text-black/70">
-                  Falta configurar el WhatsApp de ventas en <span className="font-bold">src/config.ts</span>{' '}
-                  (campo <span className="font-bold">whatsappPhoneE164</span>).
+                  Falta configurar el WhatsApp de ventas (variable{' '}
+                  <span className="font-bold">VITE_WHATSAPP_PHONE</span>).
                 </div>
               )}
 
@@ -209,4 +210,3 @@ export function OrderPanel(props: {
     </div>
   )
 }
-
