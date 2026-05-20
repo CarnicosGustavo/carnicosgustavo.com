@@ -11,6 +11,7 @@
     "postinstall": "node -e \"if(process.platform==='win32'){require('child_process').execSync('npm i --no-save --no-package-lock @rollup/rollup-win32-x64-msvc',{stdio:'inherit'})}\""
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.106.0",
     "framer-motion": "^12.38.0",
     "react": "^19.2.5",
     "react-dom": "^19.2.5"

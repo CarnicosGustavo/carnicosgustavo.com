@@ -24,20 +24,57 @@ export function OrderPanel(props: {
   const [phone, setPhone] = useState('')
   const [deliveryAddress, setDeliveryAddress] = useState('')
   const [notes, setNotes] = useState('')
+  const [saving, setSaving] = useState(false)
+  const [saveError, setSaveError] = useState<string | null>(null)
 
   const totalUnits = useMemo(() => items.reduce((acc, x) => acc + x.quantity, 0), [items])
   const sendEnabled = items.length > 0 && canSendWhatsApp(CONTACT.whatsappPhoneE164)
 
   if (!open) return null
 
-  function sendToWhatsApp() {
+  async function sendToWhatsApp() {
+    if (!sendEnabled) return
     const message = buildWhatsAppMessage({
       checkout: { businessName, contactName, phone, deliveryAddress, notes },
       items,
       locationLabel: BUSINESS.locationLabel,
     })
-    const url = buildWhatsAppUrl({ phoneE164: CONTACT.whatsappPhoneE164, message })
-    window.open(url, '_blank', 'noopener,noreferrer')
+
+    setSaving(true)
+    setSaveError(null)
+    try {
+      const resp = await fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          businessName,
+          contactName,
+          phone,
+          deliveryAddress,
+          notes,
+          locationLabel: BUSINESS.locationLabel,
+          items,
+          whatsappMessage: message,
+        }),
+      })
+
+      if (!resp.ok) {
+        let detail = ''
+        try {
+          const data = (await resp.json()) as { error?: unknown }
+          detail = typeof data?.error === 'string' ? data.error : ''
+        } catch {
+          detail = ''
+        }
+        throw new Error(detail || `HTTP ${resp.status}`)
+      }
+    } catch (e) {
+      setSaveError(e instanceof Error ? e.message : 'No se pudo guardar el pedido')
+    } finally {
+      setSaving(false)
+      const url = buildWhatsAppUrl({ phoneE164: CONTACT.whatsappPhoneE164, message })
+      window.open(url, '_blank', 'noopener,noreferrer')
+    }
   }
 
   const missing = []
@@ -189,13 +226,19 @@ export function OrderPanel(props: {
                 </div>
               )}
 
+              {saveError && (
+                <div className="rounded border border-cg-red/20 bg-cg-red/5 p-3 text-xs text-black/70">
+                  No se pudo guardar en sistema: {saveError}. Se abrirá WhatsApp de todos modos.
+                </div>
+              )}
+
               <button
                 type="button"
                 disabled={!sendEnabled || !formValid}
                 onClick={sendToWhatsApp}
                 className="inline-flex items-center justify-center rounded bg-cg-red px-4 py-3 text-sm font-extrabold text-white disabled:cursor-not-allowed disabled:opacity-50"
               >
-                Enviar pedido por WhatsApp
+                {saving ? 'Guardando…' : 'Enviar pedido por WhatsApp'}
               </button>
 
               {!formValid && (
