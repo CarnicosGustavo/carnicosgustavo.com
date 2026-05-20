@@ -164,7 +164,7 @@ export default async function handler(req: ApiRequest, res: ApiResponse) {
           user_uid: 'system',
           notes: notes || null,
           delivery_address: deliveryAddress || null,
-          requires_weighing: false,
+          requires_weighing: true,
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
         })
@@ -182,7 +182,7 @@ export default async function handler(req: ApiRequest, res: ApiResponse) {
           quantity_kg: null,
           unit_price: '0.00',
           subtotal: '0.00',
-          status: 'PENDIENTE',
+          status: 'PENDIENTE_PESAJE',
           created_at: new Date().toISOString(),
         }))
 
