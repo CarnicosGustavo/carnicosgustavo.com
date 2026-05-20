@@ -9,6 +9,8 @@ function canSendWhatsApp(phoneE164: string) {
   return digits.length >= 11
 }
 
+type SaveState = 'idle' | 'saving' | 'success' | 'error'
+
 export function OrderPanel(props: {
   open: boolean
   items: OrderItem[]
@@ -24,24 +26,30 @@ export function OrderPanel(props: {
   const [phone, setPhone] = useState('')
   const [deliveryAddress, setDeliveryAddress] = useState('')
   const [notes, setNotes] = useState('')
-  const [saving, setSaving] = useState(false)
+  const [saveState, setSaveState] = useState<SaveState>('idle')
   const [saveError, setSaveError] = useState<string | null>(null)
+  const [orderId, setOrderId] = useState<string | null>(null)
 
   const totalUnits = useMemo(() => items.reduce((acc, x) => acc + x.quantity, 0), [items])
-  const sendEnabled = items.length > 0 && canSendWhatsApp(CONTACT.whatsappPhoneE164)
+  const hasWhatsApp = canSendWhatsApp(CONTACT.whatsappPhoneE164)
+  const isSavingOrLoading = saveState === 'saving'
 
   if (!open) return null
 
-  async function sendToWhatsApp() {
-    if (!sendEnabled) return
-    const message = buildWhatsAppMessage({
-      checkout: { businessName, contactName, phone, deliveryAddress, notes },
-      items,
-      locationLabel: BUSINESS.locationLabel,
-    })
+  const missing = []
+  if (!businessName.trim()) missing.push('Negocio')
+  if (!contactName.trim()) missing.push('Contacto')
+  if (!phone.trim()) missing.push('Teléfono')
 
-    setSaving(true)
+  const formValid = missing.length === 0
+
+  async function saveOrder() {
+    if (!formValid || items.length === 0) return
+
+    setSaveState('saving')
     setSaveError(null)
+    setOrderId(null)
+
     try {
       const resp = await fetch('/api/orders', {
         method: 'POST',
@@ -54,7 +62,6 @@ export function OrderPanel(props: {
           notes,
           locationLabel: BUSINESS.locationLabel,
           items,
-          whatsappMessage: message,
         }),
       })
 
@@ -68,21 +75,42 @@ export function OrderPanel(props: {
         }
         throw new Error(detail || `HTTP ${resp.status}`)
       }
+
+      const data = (await resp.json()) as { ok?: boolean; id?: string }
+      if (data.id) {
+        setSaveState('success')
+        setOrderId(data.id)
+      } else {
+        throw new Error('No se recibió ID del pedido')
+      }
     } catch (e) {
+      setSaveState('error')
       setSaveError(e instanceof Error ? e.message : 'No se pudo guardar el pedido')
-    } finally {
-      setSaving(false)
-      const url = buildWhatsAppUrl({ phoneE164: CONTACT.whatsappPhoneE164, message })
-      window.open(url, '_blank', 'noopener,noreferrer')
     }
   }
 
-  const missing = []
-  if (!businessName.trim()) missing.push('Negocio')
-  if (!contactName.trim()) missing.push('Contacto')
-  if (!phone.trim()) missing.push('Teléfono')
+  function shareWhatsApp() {
+    const message = buildWhatsAppMessage({
+      checkout: { businessName, contactName, phone, deliveryAddress, notes },
+      items,
+      locationLabel: BUSINESS.locationLabel,
+    })
 
-  const formValid = missing.length === 0
+    const url = buildWhatsAppUrl({ phoneE164: CONTACT.whatsappPhoneE164, message })
+    window.open(url, '_blank', 'noopener,noreferrer')
+  }
+
+  function resetForm() {
+    setBusinessName('')
+    setContactName('')
+    setPhone('')
+    setDeliveryAddress('')
+    setNotes('')
+    setSaveState('idle')
+    setSaveError(null)
+    setOrderId(null)
+    onClear()
+  }
 
   return (
     <div className="fixed inset-0 z-50">
@@ -219,27 +247,48 @@ export function OrderPanel(props: {
                 />
               </div>
 
-              {!canSendWhatsApp(CONTACT.whatsappPhoneE164) && (
-                <div className="rounded border border-cg-red/20 bg-cg-red/5 p-3 text-xs text-black/70">
-                  Falta configurar el WhatsApp de ventas (variable{' '}
-                  <span className="font-bold">VITE_WHATSAPP_PHONE</span>).
+              {saveState === 'success' && orderId && (
+                <div className="rounded border border-green-500/20 bg-green-500/5 p-3 text-xs text-green-700">
+                  ✓ Pedido guardado exitosamente (ID: {orderId})
                 </div>
               )}
 
-              {saveError && (
+              {saveState === 'error' && saveError && (
                 <div className="rounded border border-cg-red/20 bg-cg-red/5 p-3 text-xs text-black/70">
-                  No se pudo guardar en sistema: {saveError}. Se abrirá WhatsApp de todos modos.
+                  ✗ Error: {saveError}
                 </div>
               )}
 
-              <button
-                type="button"
-                disabled={!sendEnabled || !formValid}
-                onClick={sendToWhatsApp}
-                className="inline-flex items-center justify-center rounded bg-cg-red px-4 py-3 text-sm font-extrabold text-white disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                {saving ? 'Guardando…' : 'Enviar pedido por WhatsApp'}
-              </button>
+              <div className="flex flex-col gap-2">
+                <button
+                  type="button"
+                  disabled={!formValid || items.length === 0 || isSavingOrLoading}
+                  onClick={saveOrder}
+                  className="inline-flex items-center justify-center rounded bg-cg-red px-4 py-3 text-sm font-extrabold text-white disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  {saveState === 'saving' ? 'Guardando…' : 'Guardar pedido'}
+                </button>
+
+                {saveState === 'success' && hasWhatsApp && (
+                  <button
+                    type="button"
+                    onClick={shareWhatsApp}
+                    className="inline-flex items-center justify-center rounded border-2 border-cg-red px-4 py-3 text-sm font-extrabold text-cg-red hover:bg-cg-red/5"
+                  >
+                    Compartir por WhatsApp (opcional)
+                  </button>
+                )}
+
+                {saveState === 'success' && (
+                  <button
+                    type="button"
+                    onClick={resetForm}
+                    className="inline-flex items-center justify-center rounded border border-black/15 px-4 py-3 text-sm font-extrabold text-cg-black hover:bg-cg-gray"
+                  >
+                    Nuevo pedido
+                  </button>
+                )}
+              </div>
 
               {!formValid && (
                 <div className="text-xs text-black/60">
