@@ -123,5 +123,76 @@ export default async function handler(req: ApiRequest, res: ApiResponse) {
     return
   }
 
+  // SINCRONIZACIÓN: También crea el pedido en la tabla 'orders' del dashboard
+  try {
+    // 1. Crear o obtener el cliente
+    const { data: existingCustomer } = await supabase
+      .from('customers')
+      .select('id')
+      .eq('phone', phone)
+      .single()
+
+    let customerId = existingCustomer?.id
+
+    if (!customerId) {
+      const { data: newCustomer } = await supabase
+        .from('customers')
+        .insert({
+          whatsapp_phone: phone,
+          name: businessName,
+          email: null,
+          phone: phone,
+          address: deliveryAddress || null,
+          notes: notes || null,
+          status: 'active',
+          user_uid: 'system',
+        })
+        .select('id')
+        .single()
+
+      customerId = newCustomer?.id
+    }
+
+    // 2. Crear el pedido en la tabla 'orders'
+    if (customerId) {
+      const { data: orderData } = await supabase
+        .from('orders')
+        .insert({
+          customer_id: customerId,
+          status: 'pending',
+          total_amount: '0.00',
+          user_uid: 'system',
+          notes: notes || null,
+          delivery_address: deliveryAddress || null,
+          requires_weighing: false,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        })
+        .select('id')
+        .single()
+
+      // 3. Crear los items en 'order_items'
+      if (orderData?.id) {
+        const orderItems = items.map((item) => ({
+          order_id: orderData.id,
+          product_id: parseInt(item.productId, 10),
+          product_name: item.name,
+          quantity: item.quantity,
+          quantity_pieces: item.quantity,
+          quantity_kg: null,
+          unit_price: '0.00',
+          subtotal: '0.00',
+          status: 'PENDIENTE',
+          created_at: new Date().toISOString(),
+        }))
+
+        await supabase.from('order_items').insert(orderItems)
+      }
+    }
+  } catch (syncError) {
+    // Log sync error pero no falles el pedido original
+    console.error('Sync to orders table failed:', syncError)
+  }
+
   json(res, 200, { ok: true, id: data?.id })
 }
