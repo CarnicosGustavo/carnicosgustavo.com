@@ -79,17 +79,17 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'canal-nacional-lomo',
-    name: 'CANAL NACIONAL LOMO',
+    name: 'CANAL NACIONAL LADO LOMO',
     description: 'Canal de cerdo para despiece estilo NACIONAL LOMO.',
   },
   {
     id: 'canal-nacional-espilomo',
-    name: 'CANAL NACIONAL ESPILOMO',
+    name: 'CANAL NACIONAL LADO ESPILOMO',
     description: 'Canal de cerdo para despiece estilo NACIONAL ESPILOMO.',
   },
   {
     id: 'canas',
-    name: 'CAÑAS',
+    name: 'CAÑA',
     description: 'Cañas de cerdo.',
   },
   {
@@ -105,7 +105,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'corbatas',
-    name: 'CORBATAS',
+    name: 'CORBATA',
     description: 'Corbatas de cerdo.',
   },
   {
@@ -247,7 +247,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'mascara-recorte',
-    name: 'MASCARA RECORTE',
+    name: 'RECORTE DE MASCARA',
     description: 'Recortes de máscara de cerdo.',
   },
   {
@@ -372,7 +372,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'trompas',
-    name: 'TROMPAS',
+    name: 'TROMPA',
     description: 'Trompas de cerdo.',
   },
 ]
