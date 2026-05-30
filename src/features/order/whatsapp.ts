@@ -27,7 +27,8 @@ export function buildWhatsAppMessage(params: {
   lines.push('')
   lines.push('Productos:')
   for (const item of items) {
-    lines.push(`- ${item.quantity} x ${item.name}`)
+    const u = item.unit === 'kg' ? 'kg' : 'pz'
+    lines.push(`- ${item.quantity} ${u} ${item.name}`)
   }
   lines.push('')
   lines.push('Gracias.')

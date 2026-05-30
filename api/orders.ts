@@ -4,6 +4,7 @@ type OrderItem = {
   productId: string
   name: string
   quantity: number
+  unit: 'piezas' | 'kg'
 }
 
 type ApiRequest = AsyncIterable<Uint8Array> & {
@@ -56,7 +57,8 @@ function asItems(value: unknown): OrderItem[] {
         typeof qtyRaw === 'number' ? qtyRaw : typeof qtyRaw === 'string' ? Number(qtyRaw) : NaN
       if (!productId || !name) return null
       if (!Number.isFinite(quantity) || quantity <= 0) return null
-      return { productId, name, quantity: Math.floor(quantity) }
+      const unit: 'piezas' | 'kg' = o.unit === 'kg' ? 'kg' : 'piezas'
+      return { productId, name, quantity: Math.round(quantity * 1000) / 1000, unit }
     })
     .filter((x): x is OrderItem => Boolean(x))
 }

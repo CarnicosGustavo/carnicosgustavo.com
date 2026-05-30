@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { BUSINESS, CONTACT } from '../../config'
 import type { OrderItem } from './useOrder'
@@ -17,13 +17,26 @@ export function OrderPanel(props: {
   onClose: () => void
   onIncrement: (productId: string) => void
   onDecrement: (productId: string) => void
+  onSetUnit: (productId: string, unit: 'piezas' | 'kg') => void
+  onSetQuantity: (productId: string, qty: number) => void
   onRemove: (productId: string) => void
   onClear: () => void
 }) {
-  const { open, items, onClose, onIncrement, onDecrement, onRemove, onClear } = props
+  const { open, items, onClose, onIncrement, onDecrement, onSetUnit, onSetQuantity, onRemove, onClear } = props
   const [businessName, setBusinessName] = useState('')
   const [contactName, setContactName] = useState('')
   const [phone, setPhone] = useState('')
+
+  // Pre-rellena el teléfono si el link trae ?tel= o ?phone=
+  useEffect(() => {
+    try {
+      const params = new URLSearchParams(window.location.search)
+      const urlPhone = (params.get('tel') ?? params.get('phone') ?? '').replace(/[^\d]/g, '')
+      if (urlPhone.length >= 7) setPhone(urlPhone)
+    } catch {
+      /* noop */
+    }
+  }, [])
   const [deliveryAddress, setDeliveryAddress] = useState('')
   const [notes, setNotes] = useState('')
   const [saveState, setSaveState] = useState<SaveState>('idle')
@@ -157,9 +170,20 @@ export function OrderPanel(props: {
                         >
                           −
                         </button>
-                        <div className="min-w-10 text-center text-sm font-extrabold text-cg-black">
-                          {item.quantity}
-                        </div>
+                        <input
+                          type="text"
+                          inputMode="decimal"
+                          value={String(item.quantity)}
+                          onChange={(e) => {
+                            let raw = e.target.value.replace(/[^\d.]/g, '')
+                            const d = raw.indexOf('.')
+                            if (d !== -1) raw = raw.slice(0, d + 1) + raw.slice(d + 1).replace(/\./g, '')
+                            const v = parseFloat(raw)
+                            if (Number.isFinite(v) && v > 0) onSetQuantity(item.productId, v)
+                          }}
+                          onFocus={(e) => e.currentTarget.select()}
+                          className="h-9 w-14 rounded border border-black/15 text-center text-sm font-extrabold text-cg-black outline-none focus:border-cg-red"
+                        />
                         <button
                           type="button"
                           className="inline-flex h-9 w-9 items-center justify-center rounded border border-black/15 text-lg font-extrabold text-cg-black hover:bg-cg-gray"
@@ -167,6 +191,29 @@ export function OrderPanel(props: {
                           aria-label="Aumentar"
                         >
                           +
+                        </button>
+                      </div>
+                      {/* Selector de unidad */}
+                      <div className="mt-2 inline-flex overflow-hidden rounded border border-black/15">
+                        <button
+                          type="button"
+                          onClick={() => onSetUnit(item.productId, 'piezas')}
+                          className={[
+                            'px-3 py-1 text-xs font-extrabold',
+                            item.unit === 'piezas' ? 'bg-cg-red text-white' : 'bg-white text-cg-black',
+                          ].join(' ')}
+                        >
+                          Piezas
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => onSetUnit(item.productId, 'kg')}
+                          className={[
+                            'px-3 py-1 text-xs font-extrabold',
+                            item.unit === 'kg' ? 'bg-cg-red text-white' : 'bg-white text-cg-black',
+                          ].join(' ')}
+                        >
+                          Kg
                         </button>
                       </div>
                     </div>

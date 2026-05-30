@@ -379,6 +379,8 @@ function App() {
         onClose={() => setOrderOpen(false)}
         onIncrement={order.increment}
         onDecrement={order.decrement}
+        onSetUnit={order.setUnit}
+        onSetQuantity={order.setQuantity}
         onRemove={order.remove}
         onClear={order.clear}
       />
